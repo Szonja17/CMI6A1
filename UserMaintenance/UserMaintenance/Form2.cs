@@ -12,9 +12,19 @@ namespace UserMaintenance
 {
     public partial class Form2 : Form
     {
+        //Nem tudok csatlakozni az adatbázishoz valamiért errort ír ki a laptopom, ezért nem jött létre a Model1-em és az Entities se.
+        List<Flat> Flats;
+        RealEstateEntities context = new RealEstateEntities();
+
         public Form2()
         {
             InitializeComponent();
+            LoadData();
+        }
+
+        private void LoadData()
+        {
+            Flats = context.Flats.ToList();
         }
     }
 }
