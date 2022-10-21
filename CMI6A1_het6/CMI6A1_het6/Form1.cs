@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -22,13 +24,15 @@ namespace CMI6A1_het6
         public Form1()
         {
             InitializeComponent();
-            getcurrencies();
+            
             comboBox1.DataSource = Currency;
+            
             RefreshData();
             
+
         }
 
-        private void getcurrencies()
+        private string getcurrencies()
         {
             var mnbServuce = new MNBArfolyamServiceSoapClient();
 
@@ -38,6 +42,7 @@ namespace CMI6A1_het6
             var response = mnbServuce.GetCurrencies(request);
 
             var result = response.GetCurrenciesResult;
+            return result;
         }
 
         private void RefreshData()
@@ -47,6 +52,29 @@ namespace CMI6A1_het6
             xmlfeld(webszhivasa());
             diagram();
             chart1.DataSource = bs;
+            nyolcadikfeladat(getcurrencies());
+
+        }
+
+        private void nyolcadikfeladat(string result)
+        {
+            var xml = new XmlDocument();
+            xml.LoadXml(result);
+
+                foreach (XmlElement element in xml.DocumentElement)
+                {
+                    var rate = new RateDate();
+                    bs.Add(rate);
+                    rate.Date = DateTime.Parse(element.GetAttribute("date"));
+
+                    var childElement = (XmlElement)element.ChildNodes[0];
+                    rate.Currency = childElement.GetAttribute("curr");
+
+                    var unit = decimal.Parse(childElement.GetAttribute("unit"));
+                    var value = decimal.Parse(childElement.InnerText);
+                    if (childElement == null) continue;
+                }
+            
         }
 
         private void diagram()
