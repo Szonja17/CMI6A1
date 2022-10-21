@@ -22,9 +22,22 @@ namespace CMI6A1_het6
         public Form1()
         {
             InitializeComponent();
-
-            RefreshData();
+            getcurrencies();
             comboBox1.DataSource = Currency;
+            RefreshData();
+            
+        }
+
+        private void getcurrencies()
+        {
+            var mnbServuce = new MNBArfolyamServiceSoapClient();
+
+            var request = new GetCurrenciesRequestBody();
+           
+
+            var response = mnbServuce.GetCurrencies(request);
+
+            var result = response.GetCurrenciesResult;
         }
 
         private void RefreshData()
@@ -60,9 +73,9 @@ namespace CMI6A1_het6
 
             var request = new GetExchangeRatesRequestBody()
             {
-                currencyNames = "EUR",
-                startDate = "2020-01-01",
-                endDate = "2020-06-30"
+                currencyNames = (string)comboBox1.SelectedItem,
+                startDate = dateTimePicker1.Value.ToString(),
+                endDate = dateTimePicker2.Value.ToString()
             };
 
             var response = mnbServuce.GetExchangeRates(request);
