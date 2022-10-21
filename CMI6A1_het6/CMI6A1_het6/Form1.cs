@@ -42,10 +42,9 @@ namespace CMI6A1_het6
 
         private void RefreshData()
         {
-            bs.Clear();
-            webszhivasa();
+            bs.Clear(); 
             dataGridView1.DataSource = bs;
-            xmlfeld();
+            xmlfeld(webszhivasa());
             diagram();
             chart1.DataSource = bs;
         }
@@ -67,7 +66,7 @@ namespace CMI6A1_het6
             chartArea.AxisY.IsStartedFromZero = false;
         }
 
-        private void webszhivasa()
+        private string webszhivasa()
         {
             var mnbServuce = new MNBArfolyamServiceSoapClient();
 
@@ -81,9 +80,12 @@ namespace CMI6A1_het6
             var response = mnbServuce.GetExchangeRates(request);
 
             var result = response.GetExchangeRatesResult;
+
+            return result;
         }
-        private void xmlfeld()
+        private void xmlfeld(string result)
         {
+
             var xml = new XmlDocument();
             xml.LoadXml(result);
 
